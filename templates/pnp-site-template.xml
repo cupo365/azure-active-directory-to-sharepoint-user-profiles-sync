@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pnp:Provisioning xmlns:pnp="http://schemas.dev.office.com/PnP/2022/09/ProvisioningSchema">
+  <pnp:Preferences Generator="PnP.Framework, Version=1.11.2.0, Culture=neutral, PublicKeyToken=0d501f89f11b748c" />
+  <pnp:Templates ID="CONTAINER-TEMPLATE-2420981FD2F5450AB2474C9D5CDC7EE6">
+    <pnp:ProvisioningTemplate ID="TEMPLATE-2420981FD2F5450AB2474C9D5CDC7EE6" Version="1" BaseSiteTemplate="SITEPAGEPUBLISHING#0" Scope="RootSite">
+      <pnp:Lists>
+        <pnp:ListInstance Title="User Profile Sync Config" Description="" DocumentTemplate="{site}/UserProfileSyncConfig/Forms/template.dotx" TemplateType="101" Url="UserProfileSyncConfig" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="500" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-e717-4e80-aa17-d0c71b360101" EnableAttachments="false" DefaultDisplayFormUrl="{site}/UserProfileSyncConfig/Forms/DispForm.aspx" DefaultEditFormUrl="{site}/UserProfileSyncConfig/Forms/EditForm.aspx" DefaultNewFormUrl="{site}/UserProfileSyncConfig/Forms/Upload.aspx" ImageUrl="{site}/_layouts/15/images/itdl.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" ValidationFormula="" ValidationMessage="">
+          <pnp:ContentTypeBindings>
+            <pnp:ContentTypeBinding ContentTypeID="0x0101" Default="true" />
+            <pnp:ContentTypeBinding ContentTypeID="0x0120" />
+          </pnp:ContentTypeBindings>
+          <pnp:Views>
+            <View Name="{A7EFDFFA-CD83-4700-B3D0-05581D03C664}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Documents" Url="{site}/UserProfileSyncConfig/Forms/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="{site}/_layouts/15/images/dlicon.png?rev=47">
+              <Query>
+                <OrderBy>
+                  <FieldRef Name="FileLeafRef" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="DocIcon" />
+                <FieldRef Name="LinkFilename" />
+                <FieldRef Name="Modified" />
+                <FieldRef Name="Editor" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <JSLink>clienttemplates.js</JSLink>
+            </View>
+          </pnp:Views>
+          <pnp:Folders>
+            <pnp:Folder Name="PropertyMapping" />
+            <pnp:Folder Name="WIP" />
+          </pnp:Folders>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="d307dff3-340f-44a2-9f4b-fbfe1ba07459" Name="_CommentCount" DisplayName="Comment count" />
+            <pnp:FieldRef ID="db8d9d6d-dc9a-4fbd-85f3-4a753bfdc58c" Name="_LikeCount" DisplayName="Like count" />
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" DisplayName="Title" />
+            <pnp:FieldRef ID="cb19284a-cde7-4570-a980-1dab8bd74470" Name="_ExtendedDescription" DisplayName="Description" />
+          </pnp:FieldRefs>
+        </pnp:ListInstance>
+        <pnp:ListInstance Title="User Profile Sync Jobs" Description="" DocumentTemplate="" OnQuickLaunch="true" TemplateType="100" Url="Lists/UserProfileSyncJobs" EnableVersioning="true" MinorVersionLimit="0" MaxVersionLimit="50" DraftVersionVisibility="0" TemplateFeatureID="00bfea71-de22-43b2-a848-c05709900100" EnableFolderCreation="false" NoCrawl="true" DefaultDisplayFormUrl="{site}/Lists/UserProfileSyncJobs/DispForm.aspx" DefaultEditFormUrl="{site}/Lists/UserProfileSyncJobs/EditForm.aspx" DefaultNewFormUrl="{site}/Lists/UserProfileSyncJobs/NewForm.aspx" ImageUrl="{site}/_layouts/15/images/itgen.png?rev=47" IrmExpire="false" IrmReject="false" IsApplicationList="false" WriteSecurity="2" ValidationFormula="" ValidationMessage="">
+          <pnp:Views>
+            <View Name="{FAF02865-814B-4399-8F2E-F5C829F63722}" DefaultView="TRUE" MobileView="TRUE" MobileDefaultView="TRUE" Type="HTML" DisplayName="All Items" Url="{site}/Lists/UserProfileSyncJobs/AllItems.aspx" Level="1" BaseViewID="1" ContentTypeID="0x" ImageUrl="{site}/_layouts/15/images/generic.png?rev=47">
+              <Query>
+                <GroupBy Collapse="TRUE" GroupLimit="30">
+                  <FieldRef Name="LinkTitle" />
+                  <FieldRef Name="State" />
+                </GroupBy>
+                <OrderBy>
+                  <FieldRef Name="ID" Ascending="FALSE" />
+                </OrderBy>
+              </Query>
+              <ViewFields>
+                <FieldRef Name="JobId" />
+                <FieldRef Name="Created" />
+                <FieldRef Name="State" />
+                <FieldRef Name="NoUsers" />
+                <FieldRef Name="PropertyMapping" />
+                <FieldRef Name="DeltaToken" />
+                <FieldRef Name="SourceUri" />
+                <FieldRef Name="LogFolderUri" />
+                <FieldRef Name="Error" />
+                <FieldRef Name="Message" />
+                <FieldRef Name="Attachments" />
+              </ViewFields>
+              <RowLimit Paged="TRUE">30</RowLimit>
+              <Aggregations Value="On">
+                <FieldRef Name="State" Type="COUNT" />
+              </Aggregations>
+              <JSLink>clienttemplates.js</JSLink>
+              <ViewData />
+            </View>
+          </pnp:Views>
+          <pnp:Fields>
+            <Field Type="Text" DisplayName="Job Id" Required="FALSE" EnforceUniqueValues="TRUE" Indexed="TRUE" MaxLength="36" ID="{c9dec6e6-42e6-484a-b114-a4f7582be03b}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="JobId" Name="JobId" ColName="nvarchar4" RowOrdinal="0" CustomFormatter="" Version="2" />
+            <Field Type="Note" DisplayName="Property Mapping" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="500" RichText="FALSE" Sortable="FALSE" ID="{5625edcf-3c2a-42c9-8b22-78ca420ab91d}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="PropertyMapping" Name="PropertyMapping" ColName="ntext2" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="2" />
+            <Field Type="Note" DisplayName="Delta Token" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="500" RichText="FALSE" Sortable="FALSE" ID="{3eea8d80-fd37-4a1c-a79d-00248557e76f}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="DeltaToken" Name="DeltaToken" ColName="ntext3" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="2" />
+            <Field Type="URL" DisplayName="Source Uri" CustomFormatter="{&#xD;&#xA;  &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;  &quot;elmType&quot;: &quot;a&quot;,&#xD;&#xA;  &quot;attributes&quot;: {&#xD;&#xA;    &quot;iconName&quot;: &quot;FileSymlink&quot;,&#xD;&#xA;    &quot;class&quot;: &quot;ms-fontColor-themeDark&quot;,&#xD;&#xA;    &quot;href&quot;: &quot;=@currentField&quot;,&#xD;&#xA;    &quot;target&quot;: &quot;_blank&quot;&#xD;&#xA;  },&#xD;&#xA;  &quot;style&quot;: {&#xD;&#xA;    &quot;font-size&quot;: &quot;18px&quot;,&#xD;&#xA;    &quot;text-decoration&quot;: &quot;none&quot;,&#xD;&#xA;    &quot;padding-left&quot;: &quot;15px&quot;,&#xD;&#xA;    &quot;font-weight&quot;: &quot;bold&quot;&#xD;&#xA;  }&#xD;&#xA;}" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" ID="{4b8e766a-540d-4974-8350-7013d4be61a7}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="SourceUri" Name="SourceUri" ColName="nvarchar5" RowOrdinal="0" ColName2="nvarchar6" RowOrdinal2="0" Version="1" />
+            <Field Type="Choice" DisplayName="State" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="TRUE" Format="Dropdown" FillInChoice="TRUE" ID="{fe328be5-1146-467d-83f5-6290baaff173}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="State" Name="State" ColName="nvarchar7" RowOrdinal="0" CustomFormatter="{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Unknown&quot;]},&quot;sp-css-backgroundColor-BgOrange sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Submitted&quot;]},&quot;sp-css-backgroundColor-BgDarkPink sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Processing&quot;]},&quot;sp-css-backgroundColor-BgPurple sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Queued&quot;]},&quot;sp-css-backgroundColor-BgLightBlue sp-css-borderColor-LightBlueFont sp-field-fontSizeSmall sp-css-color-LightBlueFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Succeeded&quot;]},&quot;sp-css-backgroundColor-BgGreen sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$State]&quot;,&quot;Error&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,&quot;sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-neutralSecondary&quot;]}]}]}]}]}]}},&quot;txtContent&quot;:&quot;[$State]&quot;}]}" Version="4">
+              <CHOICES>
+                <CHOICE>Unknown</CHOICE>
+                <CHOICE>Submitted</CHOICE>
+                <CHOICE>Processing</CHOICE>
+                <CHOICE>Queued</CHOICE>
+                <CHOICE>Succeeded</CHOICE>
+                <CHOICE>Error</CHOICE>
+                <CHOICE>Skipped</CHOICE>
+              </CHOICES>
+            </Field>
+            <Field Type="Note" DisplayName="Message" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" NumLines="500" RichText="FALSE" Sortable="FALSE" ID="{ba5db62a-1ebd-4a03-a95d-ede9eacdfd4d}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="Message" Name="Message" ColName="ntext4" RowOrdinal="0" CustomFormatter="" RestrictedMode="TRUE" RichTextMode="Compatible" IsolateStyles="FALSE" AppendOnly="FALSE" Version="1" />
+            <Field Type="Number" DisplayName="No. Users" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="TRUE" Min="0" ID="{1d47ef25-726d-4275-b299-b67c362bd5bc}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="NoUsers" Name="NoUsers" ColName="float1" RowOrdinal="0" CustomFormatter="" Percentage="FALSE" Version="3" />
+            <Field Type="URL" DisplayName="Log Folder Uri" Required="FALSE" EnforceUniqueValues="FALSE" Indexed="FALSE" Format="Hyperlink" ID="{3ade5493-8ec9-48c9-87f7-a5960bc6a08b}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="LogFolderUri" Name="LogFolderUri" ColName="nvarchar8" RowOrdinal="0" ColName2="nvarchar9" RowOrdinal2="0" CustomFormatter="{&#xD;&#xA;  &quot;$schema&quot;: &quot;https://developer.microsoft.com/json-schemas/sp/v2/column-formatting.schema.json&quot;,&#xD;&#xA;  &quot;elmType&quot;: &quot;a&quot;,&#xD;&#xA;  &quot;attributes&quot;: {&#xD;&#xA;    &quot;iconName&quot;: &quot;FileSymlink&quot;,&#xD;&#xA;    &quot;class&quot;: &quot;ms-fontColor-themeDark&quot;,&#xD;&#xA;    &quot;href&quot;: &quot;=@currentField&quot;,&#xD;&#xA;    &quot;target&quot;: &quot;_blank&quot;&#xD;&#xA;  },&#xD;&#xA;  &quot;style&quot;: {&#xD;&#xA;    &quot;font-size&quot;: &quot;18px&quot;,&#xD;&#xA;    &quot;text-decoration&quot;: &quot;none&quot;,&#xD;&#xA;    &quot;padding-left&quot;: &quot;15px&quot;,&#xD;&#xA;    &quot;font-weight&quot;: &quot;bold&quot;&#xD;&#xA;  }&#xD;&#xA;}" Version="1" />
+            <Field Type="Choice" DisplayName="Error" Required="TRUE" EnforceUniqueValues="FALSE" Indexed="TRUE" Format="Dropdown" FillInChoice="TRUE" ID="{fd6db28d-c49c-43d3-a5f2-728bb1bd422e}" SourceID="{{listid:User Profile Sync Jobs}}" StaticName="Error" Name="Error" ColName="nvarchar10" RowOrdinal="0" CustomFormatter="{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;flex-wrap&quot;:&quot;wrap&quot;,&quot;display&quot;:&quot;flex&quot;},&quot;children&quot;:[{&quot;elmType&quot;:&quot;div&quot;,&quot;style&quot;:{&quot;box-sizing&quot;:&quot;border-box&quot;,&quot;padding&quot;:&quot;4px 8px 5px 8px&quot;,&quot;overflow&quot;:&quot;hidden&quot;,&quot;text-overflow&quot;:&quot;ellipsis&quot;,&quot;display&quot;:&quot;flex&quot;,&quot;border-radius&quot;:&quot;16px&quot;,&quot;height&quot;:&quot;24px&quot;,&quot;align-items&quot;:&quot;center&quot;,&quot;white-space&quot;:&quot;nowrap&quot;,&quot;margin&quot;:&quot;4px 4px 4px 4px&quot;},&quot;attributes&quot;:{&quot;class&quot;:{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;NoError&quot;]},&quot;sp-css-backgroundColor-BgMintGreen sp-css-borderColor-MintGreenFont sp-field-fontSizeSmall sp-css-color-MintGreenFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;InternalError&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;DataFileNotExist&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;DataFileNotInTenant&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;DataFileTooBig&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;InvalidDataFile&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;ImportCompleteWithError&quot;]},&quot;sp-css-backgroundColor-BgOrange sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,{&quot;operator&quot;:&quot;:&quot;,&quot;operands&quot;:[{&quot;operator&quot;:&quot;==&quot;,&quot;operands&quot;:[&quot;[$Error]&quot;,&quot;DeltaCheckError&quot;]},&quot;sp-css-backgroundColor-BgRed sp-css-borderColor-WhiteFont sp-field-fontSizeSmall sp-css-color-WhiteFont&quot;,&quot;sp-css-backgroundColor-BgBlue sp-field-borderAllRegular sp-field-borderAllSolid sp-css-borderColor-WhiteFont sp-css-color-WhiteFont&quot;]}]}]}]}]}]}]}]}},&quot;txtContent&quot;:&quot;[$Error]&quot;}],&quot;templateId&quot;:&quot;BgColorChoicePill&quot;}" Version="6">
+              <CHOICES>
+                <CHOICE>NoError</CHOICE>
+                <CHOICE>InternalError</CHOICE>
+                <CHOICE>DataFileNotExist</CHOICE>
+                <CHOICE>DataFileNotInTenant</CHOICE>
+                <CHOICE>DataFileTooBig</CHOICE>
+                <CHOICE>InvalidDataFile</CHOICE>
+                <CHOICE>ImportCompleteWithError</CHOICE>
+                <CHOICE>DeltaCheckError</CHOICE>
+              </CHOICES>
+            </Field>
+          </pnp:Fields>
+          <pnp:FieldRefs>
+            <pnp:FieldRef ID="fa564e0f-0c70-4ab9-b863-0177e6ddd247" Name="Title" Required="true" DisplayName="Partition Key" />
+          </pnp:FieldRefs>
+          <pnp:Security>
+            <pnp:BreakRoleInheritance CopyRoleAssignments="false" ClearSubscopes="false">
+              <pnp:RoleAssignment Principal="{associatedownergroupid}" RoleDefinition="Full Control" />
+              <pnp:RoleAssignment Principal="{associatedvisitorgroupid}" RoleDefinition="Read" />
+              <pnp:RoleAssignment Principal="{associatedmembergroupid}" RoleDefinition="Edit" />
+            </pnp:BreakRoleInheritance>
+          </pnp:Security>
+        </pnp:ListInstance>
+      </pnp:Lists>
+    </pnp:ProvisioningTemplate>
+  </pnp:Templates>
+</pnp:Provisioning>

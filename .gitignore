@@ -1,0 +1,11 @@
+# drawio temp files
+*.xml.bkp
+*.xml.dtmp
+*.svg.bkp
+*.svg.dtmp
+
+# local environment variables
+*.env.local
+
+# certificate files
+certificates/*

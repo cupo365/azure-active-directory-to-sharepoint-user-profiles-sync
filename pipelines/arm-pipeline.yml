@@ -1,0 +1,76 @@
+name : ARM - Deploy Production
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - 'arm/*'
+    - 'pipelines/*'
+
+pr: none
+
+variables:
+  # Agent VM image name
+  vmImageName: 'windows-2019'
+  # Working Directory
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  # ResourceGroup name where the resource are going to be deployed to
+  resourceGroupName: 'rg-aad2spup'
+  # If the resource group does not exist it will be created with this location
+  resourceGroupLocation: 'West Europe'
+  # Azure Resource Manager connection created during pipeline creation, can be connection name or the ID
+  connectedServiceName: '{YOUR_SERVICE_CONNECTION}'
+  # Azure Subscription ID where the Azure ResourceGroup is deployed to
+  azureSubscriptionId: '{YOUR_SUBSCRIPTION_ID}'
+
+pool:
+    vmImage: $(vmImageName)
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+  - job: Build
+    displayName: Build and publish template
+    steps:
+    - task: CopyFiles@2
+      displayName: Copy template to artifact staging directory
+      inputs:
+        sourceFolder: '$(workingDirectory)/arm'
+        contents: |
+          **/*.json
+          **/*.bicep
+        targetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: drop
+      displayName: Publish template
+
+- stage: Deploy
+  displayName: Deploy
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: Deploy
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: 'Deploy Production Azure resources'
+            inputs:
+              deploymentScope: 'Resource Group'
+              connectedServiceName: '$(connectedServiceName)'
+              subscriptionId: $(azureSubscriptionId)
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: $(resourceGroupName)
+              location: $(resourceGroupLocation)
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Agent.BuildDirectory)/drop/azuredeploy.bicep'
+              csmParametersFile: '$(Agent.BuildDirectory)/drop/azuredeploy.parameters.production.json'
+              deploymentMode: 'Incremental'

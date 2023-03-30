@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "tags": {
+      "value": {
+        "Environment": "Production",
+        "Developer": "cup o'365"
+      }
+    },
+    "automationAccount_name": {
+      "value": "aa-aad2spup"
+    },
+    "credentials_clientId": {
+      "value": "{YOUR_CLIENT_ID}"
+    },
+    "credentials_clientSecret": {
+      "value": "{YOUR_CLIENT_SECRET}"
+    },
+    "runbook_SyncSharePointUserProfilesFromAzureActiveDirectory_script_uri": {
+      "value": "{NGROK_URL}/scripts/runbooks/run-SyncSharePointUserProfilesFromAzureActiveDirectory.ps1"
+    },
+    "runbook_UpdateSharePointUserProfilesSyncJobStatus_script_uri": {
+      "value": "{NGROK_URL}/scripts/runbooks/run-UpdateSharePointUserProfilesSyncJobStatus.ps1"
+    },
+    "runbook_UpdateSharePointUserProfilesSyncJobStatus_name": {
+      "value": "run-UpdateSharePointUserProfilesSyncJobStatus"
+    },
+    "runbook_SyncSharePointUserProfilesFromAzureActiveDirectory_name": {
+      "value": "run-SyncSharePointUserProfilesFromAzureActiveDirectory"
+    },
+    "logicApp_name": {
+      "value": "logic-updateSyncJobStatus"
+    },
+    "logicApp_paramaters_processObservers": {
+      "value": "info@cupo365.gg"
+    },
+    "logicApp_sharePointDatabaseSiteUrl": {
+      "value": "https://{SHAREPOINT_DOMAIN}.sharepoint.com/sites/{YOUR_SITE_URL}"
+    },
+    "logicApp_sharePointDatabaseJobsListId": {
+      "value": "{SHAREPOINT_LIST_ID}"
+    }
+  }
+}
