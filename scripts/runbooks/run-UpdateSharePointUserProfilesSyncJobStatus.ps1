@@ -125,9 +125,9 @@
 <# ------------------- Parameters ------------------- #>
 Param (
     [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidatePattern('(http[s]?|[s]?ftp[s]?)(:\/\/)([^\s,]+)')] [string] $DatabaseSiteUrl = 'https://cupo365.sharepoint.com/sites/aad2spup',
-    [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidatePattern('^[a-f\d]{4}(?:[a-f\d]{4}-){4}[a-f\d]{12}$')] [string] $JobId = 'b0228679-3415-4b77-88c8-7281f780ab01',
+    [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [ValidatePattern('^[a-f\d]{4}(?:[a-f\d]{4}-){4}[a-f\d]{12}$')] [string] $JobId,
     [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [string] $JobListName = "User Profile Sync Jobs",
-    [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidateSet("ManagedIdentity", "CredentialsWithoutMFA", "CredentialsWithMFA", "ClientSecret", "CertificateThumbprint", "CertificatePath")] [string] $AuthenticationMethod = "CredentialsWithMFA",
+    [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidateSet("ManagedIdentity", "CredentialsWithoutMFA", "CredentialsWithMFA", "ClientSecret", "CertificateThumbprint", "CertificatePath")] [string] $AuthenticationMethod = "ManagedIdentity",
     [Parameter(Mandatory = $false)] [ValidatePattern('^[a-f\d]{4}(?:[a-f\d]{4}-){4}[a-f\d]{12}$')] [string] $TenantId = $null,
     [Parameter(Mandatory = $false)] [mailaddress] $UserName = $null,
     [Parameter(Mandatory = $false)] [string] $Pass = $null,
@@ -136,18 +136,19 @@ Param (
     [Parameter(Mandatory = $false)] [string] $CertificateThumbprint = $null,
     [Parameter(Mandatory = $false)] [string] $CertificatePath = $null,
     [Parameter(Mandatory = $false)] [string] $CertificatePass = $null,
-    [Parameter(Mandatory = $false)] [boolean] $DryRun = $true
+    [Parameter(Mandatory = $false)] [boolean] $DryRun = $false
 )
 
 <# ------------------ Requirements ------------------ #>
 #Requires -Version 7
-##Requires -Modules @{ModuleName='PnP.PowerShell';ModuleVersion='1.12.0'}
+#Requires -Modules @{ModuleName='PnP.PowerShell';ModuleVersion='1.12.0'}
 
 <# --------------- Runtime variables ---------------- #>
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'Continue'
 $VerbosePreference = 'Continue'
 $DebugPreference = 'SilentlyContinue' # 'Continue'
+$Env:PNPPOWERSHELL_UPDATECHECK = 'Off'
 
 <# ---------------- Global variables ---------------- #>
 $GLOBAL:requiredPSModules = @("PnP.PowerShell")
@@ -216,7 +217,7 @@ Function ConnectTo-SharePointOnlineWithManagedIdentity {
     )
     
     Try {
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "SiteUrl: $($SiteUrl)"
         Connect-PnPOnline -Url $SiteUrl -ManagedIdentity -ErrorVariable SharePointConnectionError -Verbose:$false | Out-Null
 
@@ -236,15 +237,15 @@ Function ConnectTo-SharePointOnlineWithManagedIdentity {
 Function ConnectTo-SharePointOnlineWithCredentials {
     Param(
         [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [ValidatePattern('(http[s]?|[s]?ftp[s]?)(:\/\/)([^\s,]+)')] [string] $SiteUrl,
-        [Parameter(Mandatory = $false)] [AllowNull()] [AllowEmptyString()] [mailaddress] $UserName,
-        [Parameter(Mandatory = $false)] [AllowNull()] [AllowEmptyString()] [securestring] $Pass,
+        [Parameter(Mandatory = $true)] [AllowNull()] [AllowEmptyString()] [mailaddress] $UserName,
+        [Parameter(Mandatory = $true)] [AllowNull()] [AllowEmptyString()] [securestring] $Pass,
         [Parameter(Mandatory = $true)] [boolean] $WithMFA
     )
     
     Try {
-        # Commented for enhanced performance
-        # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-        # Write-Debug -Message "WithMFA: $($WithMFA)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+        #Write-Debug -Message "WithMFA: $($WithMFA)"
 
         $SharePointConnection = $null
 
@@ -271,7 +272,7 @@ Function ConnectTo-SharePointOnlineWithCredentials {
             }
 
             If ($null -ne $RunAsCredential -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.UserName) -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.Password)) {
-                # Commented for enhanced performance
+                # Commented for performance enhancement
                 # Write-Debug -Message "RunAsCredential: $(@{
                 #     "UserName" = $RunAsCredential.UserName
                 #     "Password" = ([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($RunAsCredential.Password)))
@@ -333,8 +334,8 @@ Function ConnectTo-SharePointOnlineWithClientSecret {
         }
 
         If ($null -ne $RunAsCredential -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.UserName) -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.Password)) {
-            # Commented for enhanced performance
-            # Write-Debug -Message "SiteUrl: $($SiteUrl)"
+            # Commented for performance enhancement
+            #Write-Debug -Message "SiteUrl: $($SiteUrl)"
             # Write-Debug -Message "RunAsCredential: $(@{
             #     "UserName" = $RunAsCredential.UserName
             #     "Password" = ([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($RunAsCredential.Password)))
@@ -397,9 +398,9 @@ Function ConnectTo-SharePointOnlineWithCertificateThumbprint {
         }
 
         If ($null -ne $RunAsConnection -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.ApplicationId) -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.CertificateThumbprint) -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.TenantId)) {
-            # Commented for enhanced performance
-            # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-            # Write-Debug -Message "RunAsConnection: $($RunAsConnection | ConvertTo-Json)"
+            # Commented for performance enhancement
+            #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+            #Write-Debug -Message "RunAsConnection: $($RunAsConnection | ConvertTo-Json)"
             $SharePointConnection = Connect-PnPOnline -Url $SiteUrl -ClientId $RunAsConnection.ApplicationId -Tenant $RunAsConnection.TenantId -Thumbprint $RunAsConnection.CertificateThumbprint -ReturnConnection -ErrorVariable SharePointConnectionError -Verbose:$false
         }
         Else {
@@ -432,12 +433,12 @@ Function ConnectTo-SharePointOnlineWithCertificatePath {
         $SharePointConnection = $null
         
         If ($false -eq [string]::IsNullOrEmpty($ClientId) -and $false -eq [string]::IsNullOrEmpty($CertificatePass) -and $false -eq [string]::IsNullOrEmpty($CertificatePath) -and $false -eq [string]::IsNullOrEmpty($TenantId)) {
-            # Commented for enhanced performance
-            # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-            # Write-Debug -Message "TenantId: $($TenantId)"
-            # Write-Debug -Message "ClientId: $($ClientId)"
-            # Write-Debug -Message "CertificatePath: $($CertificatePath)"
-            # Write-Debug -Message "CertificatePass: $(([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertificatePass))))"
+            # Commented for performance enhancement
+            #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+            #Write-Debug -Message "TenantId: $($TenantId)"
+            #Write-Debug -Message "ClientId: $($ClientId)"
+            #Write-Debug -Message "CertificatePath: $($CertificatePath)"
+            #Write-Debug -Message "CertificatePass: $((ConvertFrom-SecureString -SecureString $CertificatePass -AsPlainText))"
             
             If ($CertificatePath | Test-Path) {
                 $SharePointConnection = Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -CertificatePath $CertificatePath -CertificatePassword $CertificatePass -Tenant $TenantId -ReturnConnection -ErrorVariable SharePointConnectionError -Verbose:$false
@@ -523,8 +524,8 @@ Function Get-SharePointUserProfilesBulkImportJobStatus {
 
     Try {
         Write-Verbose -Message "Fetching sync job status..."
-        # Commented for enhanced performance
-        # Write-Debug -Message "Job ID: $($JobId)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "Job ID: $($JobId)"
 
         $JobStatus = $null
         If ($null -ne $SharePointConnection) {
@@ -542,11 +543,11 @@ Function Get-SharePointUserProfilesBulkImportJobStatus {
             throw "Could not fetch the updated sync job status."
         }
 
-        # Commented for enhanced performance
-        # Write-Debug -Message "Job status: $($JobStatus.State)"
-        # Write-Debug -Message "Job error: $($JobStatus.Error)"
-        # Write-Debug -Message "Job error message: $($JobStatus.ErrorMessage)"
-        # Write-Debug -Message "Job log folder uri: $($JobStatus.LogFolderUri)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "Job status: $($JobStatus.State)"
+        #Write-Debug -Message "Job error: $($JobStatus.Error)"
+        #Write-Debug -Message "Job error message: $($JobStatus.ErrorMessage)"
+        #Write-Debug -Message "Job log folder uri: $($JobStatus.LogFolderUri)"
 
         return $JobStatus
     }
@@ -566,7 +567,7 @@ Function Get-JobListItemId {
 
     Try {
         Write-Verbose -Message "Fetching job list item id from SharePoint..."
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Job list name: $($JobListName)"
 
         $CamlQuery = "@
@@ -601,7 +602,7 @@ Function Get-JobListItemId {
             throw "Could not fetch the job list item id from SharePoint."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Job list item: $(($JobListItem | ConvertTo-Json -Depth 10 | Out-String))"
 
         return $JobListItem.ID
@@ -622,9 +623,9 @@ Function Update-JobListItem {
 
     Try {
         Write-Verbose -Message "Storing updated job status in SharePoint list '$($JobListName)'..."
-        # Commented for enhanced performance
-        # Write-Debug -Message "JobListItemId: $($JobListItemId)"
-        # Write-Debug -Message "JobListName: $($JobListName)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "JobListItemId: $($JobListItemId)"
+        #Write-Debug -Message "JobListName: $($JobListName)"
 
         $ListItemValues = @{ 
             "State"        = "$($GLOBAL:output.State)";
@@ -633,7 +634,7 @@ Function Update-JobListItem {
             "Message"      = "$($GLOBAL:output.ErrorMessage)";
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "JobListValues: $($ListItemValues | Out-String)"
 
         $JobListItem = $null
@@ -652,7 +653,7 @@ Function Update-JobListItem {
             throw "Could not store the updated job info."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Updated job list item: $($JobListItem | Out-String)"
     }
     Catch [Exception] {
@@ -678,7 +679,9 @@ Function Finish-Up {
         Disconnect-PnPOnline -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue | Out-Null
     }
     Catch [Exception] {
-        # Do nothing
+        If ($_.Exception.Message -ne 'No connection to disconnect') {
+            Write-Error -Message "An error occurred on line $($_.InvocationInfo.ScriptLineNumber) while finishing up. Message: $($_.Exception.Message)"
+        }
     }
     Finally {
         Write-Verbose -Message "Finished."
@@ -703,7 +706,7 @@ Try {
 
     # Extract the tenant domain from the database site url
     $Domain = ($DatabaseSiteUrl.Split(".")[0].Split("/")[-1] -replace '/', '')
-    # Commented for enhanced performance
+    # Commented for performance enhancement
     #Write-Debug -Message "Domain: $($Domain)"
     
     # Connect to SharePoint admin to fetch the sync job status

@@ -160,7 +160,7 @@ Param (
     [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [string] $WipFolderListRelativeUri = "/WIP",
     [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [string] $PropertyMappingFileListRelativePath = "/PropertyMapping/property-mapping.json",
     [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [string] $JobListName = "User Profile Sync Jobs",
-    [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidateSet("ManagedIdentity", "CredentialsWithoutMFA", "CredentialsWithMFA", "ClientSecret", "CertificateThumbprint", "CertificatePath")] [string] $AuthenticationMethod = "CredentialsWithMFA",
+    [Parameter(Mandatory = $false)] [ValidateNotNullOrEmpty()] [ValidateSet("ManagedIdentity", "CredentialsWithoutMFA", "CredentialsWithMFA", "ClientSecret", "CertificateThumbprint", "CertificatePath")] [string] $AuthenticationMethod = "ManagedIdentity",
     [Parameter(Mandatory = $false)] [ValidatePattern('^[a-f\d]{4}(?:[a-f\d]{4}-){4}[a-f\d]{12}$')] [string] $TenantId = $null,
     [Parameter(Mandatory = $false)] [mailaddress] $UserName = $null,
     [Parameter(Mandatory = $false)] [string] $Pass = $null,
@@ -174,13 +174,14 @@ Param (
 
 <# ------------------ Requirements ------------------ #>
 #Requires -Version 7
-##Requires -Modules @{ModuleName='PnP.PowerShell';ModuleVersion='1.12.0'}
+#Requires -Modules @{ModuleName='PnP.PowerShell';ModuleVersion='1.12.0'}
 
 <# --------------- Runtime variables ---------------- #>
 $ErrorActionPreference = 'Continue'
 $ProgressPreference = 'Continue'
 $VerbosePreference = 'Continue'
 $DebugPreference = 'SilentlyContinue' # 'Continue'
+$Env:PNPPOWERSHELL_UPDATECHECK = 'Off'
 
 <# ---------------- Global variables ---------------- #>
 $GLOBAL:requiredPSModules = @("PnP.PowerShell")
@@ -262,7 +263,7 @@ Function ConnectTo-SharePointOnlineWithManagedIdentity {
     )
     
     Try {
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "SiteUrl: $($SiteUrl)"
         Connect-PnPOnline -Url $SiteUrl -ManagedIdentity -ErrorVariable SharePointConnectionError -Verbose:$false | Out-Null
 
@@ -288,15 +289,15 @@ Function ConnectTo-SharePointOnlineWithManagedIdentity {
 Function ConnectTo-SharePointOnlineWithCredentials {
     Param(
         [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [ValidatePattern('(http[s]?|[s]?ftp[s]?)(:\/\/)([^\s,]+)')] [string] $SiteUrl,
-        [Parameter(Mandatory = $false)] [AllowNull()] [AllowEmptyString()] [mailaddress] $UserName,
-        [Parameter(Mandatory = $false)] [AllowNull()] [AllowEmptyString()] [securestring] $Pass,
+        [Parameter(Mandatory = $true)] [AllowNull()] [AllowEmptyString()] [mailaddress] $UserName,
+        [Parameter(Mandatory = $true)] [AllowNull()] [AllowEmptyString()] [securestring] $Pass,
         [Parameter(Mandatory = $true)] [boolean] $WithMFA
     )
     
     Try {
-        # Commented for enhanced performance
-        # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-        # Write-Debug -Message "WithMFA: $($WithMFA)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+        #Write-Debug -Message "WithMFA: $($WithMFA)"
 
         $SharePointConnection = $null
 
@@ -323,7 +324,7 @@ Function ConnectTo-SharePointOnlineWithCredentials {
             }
 
             If ($null -ne $RunAsCredential -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.UserName) -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.Password)) {
-                # Commented for enhanced performance
+                # Commented for performance enhancement
                 # Write-Debug -Message "RunAsCredential: $(@{
                 #     "UserName" = $RunAsCredential.UserName
                 #     "Password" = ([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($RunAsCredential.Password)))
@@ -391,7 +392,7 @@ Function ConnectTo-SharePointOnlineWithClientSecret {
         }
 
         If ($null -ne $RunAsCredential -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.UserName) -and $false -eq [string]::IsNullOrEmpty($RunAsCredential.Password)) {
-            # Commented for enhanced performance
+            # Commented for performance enhancemen
             # Write-Debug -Message "SiteUrl: $($SiteUrl)"
             # Write-Debug -Message "RunAsCredential: $(@{
             #     "UserName" = $RunAsCredential.UserName
@@ -461,9 +462,9 @@ Function ConnectTo-SharePointOnlineWithCertificateThumbprint {
         }
 
         If ($null -ne $RunAsConnection -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.ApplicationId) -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.CertificateThumbprint) -and $false -eq [string]::IsNullOrEmpty($RunAsConnection.TenantId)) {
-            # Commented for enhanced performance
-            # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-            # Write-Debug -Message "RunAsConnection: $($RunAsConnection | ConvertTo-Json)"
+            # Commented for performance enhancement
+            #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+            #Write-Debug -Message "RunAsConnection: $($RunAsConnection | ConvertTo-Json)"
             $SharePointConnection = Connect-PnPOnline -Url $SiteUrl -ClientId $RunAsConnection.ApplicationId -Tenant $RunAsConnection.TenantId -Thumbprint $RunAsConnection.CertificateThumbprint -ReturnConnection -ErrorVariable SharePointConnectionError -Verbose:$false
         }
         Else {
@@ -502,12 +503,12 @@ Function ConnectTo-SharePointOnlineWithCertificatePath {
         $SharePointConnection = $null
         
         If ($false -eq [string]::IsNullOrEmpty($ClientId) -and $false -eq [string]::IsNullOrEmpty($CertificatePass) -and $false -eq [string]::IsNullOrEmpty($CertificatePath) -and $false -eq [string]::IsNullOrEmpty($TenantId)) {
-            # Commented for enhanced performance
-            # Write-Debug -Message "SiteUrl: $($SiteUrl)"
-            # Write-Debug -Message "TenantId: $($TenantId)"
-            # Write-Debug -Message "ClientId: $($ClientId)"
-            # Write-Debug -Message "CertificatePath: $($CertificatePath)"
-            # Write-Debug -Message "CertificatePass: $(([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertificatePass))))"
+            # Commented for performance enhancement
+            #Write-Debug -Message "SiteUrl: $($SiteUrl)"
+            #Write-Debug -Message "TenantId: $($TenantId)"
+            #Write-Debug -Message "ClientId: $($ClientId)"
+            #Write-Debug -Message "CertificatePath: $($CertificatePath)"
+            #Write-Debug -Message "CertificatePass: $(([System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertificatePass))))"
             
             If ($CertificatePath | Test-Path) {
                 $SharePointConnection = Connect-PnPOnline -Url $SiteUrl -ClientId $ClientId -CertificatePath $CertificatePath -CertificatePassword $CertificatePass -Tenant $TenantId -ReturnConnection -ErrorVariable SharePointConnectionError -Verbose:$false
@@ -605,7 +606,7 @@ Function Get-PropertyMapping {
 
     Try {
         Write-Verbose -Message "Fetching property mapping..."
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "File server relative path: $($FileServerRelativePath)"
 
         $PropertyMapping = $null
@@ -624,7 +625,7 @@ Function Get-PropertyMapping {
             throw "Could not fetch property mapping."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "PropertyMapping: $($PropertyMapping | ConvertFrom-Json | Out-String)"
 
         return $PropertyMapping | ConvertFrom-Json
@@ -650,7 +651,7 @@ Function Get-LastDeltaCheck {
 
     Try {
         Write-Verbose -Message "Fetching last delta check..."
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Job list name: $($JobListName)"
 
         $CamlQuery = "@
@@ -693,7 +694,7 @@ Function Get-LastDeltaCheck {
             throw "Could not fetch last delta check. Reason: $($GetPnPListItemError)."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Last delta check: $(($LastDeltaCheck | ConvertTo-Json -Depth 10 | Out-String))"
 
         return $LastDeltaCheck        
@@ -730,9 +731,9 @@ Function Validate-PropertyMapping {
             }
         }
 
-        # Commented for enhanced performance
-        # Write-Debug -Message "Property mapping reference object: $($ReferenceObject | Out-String)"
-        # Write-Debug -Message "Property mapping difference object: $($DifferenceObject | Out-String)"
+        # Commented for performance enhancement
+        #Write-Debug -Message "Property mapping reference object: $($ReferenceObject | Out-String)"
+        #Write-Debug -Message "Property mapping difference object: $($DifferenceObject | Out-String)"
 
         return $PropertyMappingHasChanged
     }
@@ -763,7 +764,7 @@ Function Get-DeltaToken {
             return $null
         }
 
-        If ($null -ne $LastDeltaCheck -and ($LastDeltaCheck.State -ne "Succeeded" -or $LastDeltaCheck.Error -ne "NoError")) {
+        If ($null -ne $LastDeltaCheck -and (($LastDeltaCheck.State -ne "Succeeded" -and $LastDeltaCheck.State -ne "Skipped") -or $LastDeltaCheck.Error -ne "NoError")) {
             $GLOBAL:output.State = 'Skipped'
             $GLOBAL:output.Error = 'DeltaCheckError'
             throw "Last delta check was not successful or has not finished yet. Please check the lastest delta check in the SharePoint job list. Terminating run to avoid concurrent or in error resulting sync jobs..."
@@ -784,7 +785,7 @@ Function Get-DeltaToken {
             Write-Verbose -Message "Property mapping has not changed since the last delta check. Continuing..."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Delta token: $($LastDeltaCheck.DeltaToken)"
 
         return $LastDeltaCheck.DeltaToken
@@ -810,7 +811,7 @@ Function Get-AzureADUsersToSync {
     )
 
     Try {
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Select properties: $($SelectProperties)"
 
         # There is a bug in PowerShell 5.1 for the command 'Get-PnPAzureADUser'
@@ -845,8 +846,9 @@ Function Get-AzureADUsersToSync {
             $GLOBAL:output.NumberOfUsers = 0
 
             # Overwrite default values
-            $GLOBAL:output.State = 'Succeeded'
+            $GLOBAL:output.State = 'Skipped'
             $GLOBAL:output.Error = 'NoError'
+            $GLOBAL:deltaToken = $DeltaToken # Reserve delta token for next run
         }
         Else {
             If ($AzureADUsers.Users.Count -eq 1) {
@@ -859,7 +861,7 @@ Function Get-AzureADUsersToSync {
             $GLOBAL:deltaToken = $AzureADUsers.DeltaToken
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "AzureADUsers: $($AzureADUsers | ConvertTo-Json -Depth 10 | Out-String)"
 
         return $AzureADUsers
@@ -887,7 +889,7 @@ Function New-SharePointUserProfileSyncJob {
 
     Try {
         Write-Verbose -Message "Creating new SharePoint User Profile sync job..."
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Sync file server relative uri: $($SyncFileServerRelativeUri)"
 
         $SyncJob = $null
@@ -923,7 +925,7 @@ Function New-SharePointUserProfileSyncJob {
         $GLOBAL:output.SourceUri = $SyncJob.SourceUri ? [uri]::EscapeUriString($SyncJob.SourceUri) : $null
         $GLOBAL:output.LogFolderUri = $SyncJob.LogFolderUri ? [uri]::EscapeUriString($SyncJob.LogFolderUri) : $null
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "SharePoint User Profile sync job: $($SyncJob | ConvertTo-Json | Out-String)"
 
         return $SyncJob
@@ -954,7 +956,7 @@ Function Add-SyncFileAsJobListItemAttachment {
         Write-Verbose -Message "Appending the job input file to the job info list item as attachment..."
         $SyncFileLeafRef = ($SourceUri -split "/") | Select-Object -Last 1
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "SyncFileLeafRef: $($SyncFileLeafRef)"
             
         $SyncFileContent = $null
@@ -973,7 +975,7 @@ Function Add-SyncFileAsJobListItemAttachment {
             throw "Could not get content of sync file '$($SyncFileLeafRef)'. Continuing..."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Sync file content: $($SyncFileContent)"
 
         $JobListItemAttachment = $null
@@ -1007,7 +1009,7 @@ Function Add-JobListItem {
 
     Try {
         Write-Verbose -Message "Creating job list item in SharePoint list '$($JobListName)'..."
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "JobListName: $($JobListName)"
 
         $ListItemValues = @{
@@ -1023,7 +1025,7 @@ Function Add-JobListItem {
             "Message"         = "$($GLOBAL:output.Message)";
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "JobListValues: $($ListItemValues | Format-List | Out-String)"
 
         $JobListItem = $null
@@ -1042,7 +1044,7 @@ Function Add-JobListItem {
             throw "Could not create job info list item."
         }
 
-        # Commented for enhanced performance
+        # Commented for performance enhancement
         #Write-Debug -Message "Job list item: $($JobListItem | Out-String)"
 
         If ($null -ne $GLOBAL:output.SourceUri -and $null -ne $SiteUrl) {
